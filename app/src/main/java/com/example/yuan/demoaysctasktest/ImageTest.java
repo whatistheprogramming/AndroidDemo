@@ -37,6 +37,11 @@ public class ImageTest extends AppCompatActivity
         new MyAsyncTask().execute(URL); //这里参数是可变参数
     }
 
+    /**
+     * 第一个参数是传入的类型，这里是url
+     * 第二个是进度
+     * 第三个是返回的类型
+     */
     class MyAsyncTask extends AsyncTask<String, Void, Bitmap>
     {
 
