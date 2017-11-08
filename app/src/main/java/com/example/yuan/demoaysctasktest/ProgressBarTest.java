@@ -15,6 +15,8 @@ public class ProgressBarTest extends AppCompatActivity
 
     private TextView textView;
 
+    private MyAsyncTask mTast;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -25,9 +27,26 @@ public class ProgressBarTest extends AppCompatActivity
         textView = (TextView) findViewById(R.id.text_complete);
 
         //启动异步处理,这是就不需要传递任何参数了
-        new MyAsyncTask().execute();
+        mTast = new MyAsyncTask();
+        mTast.execute();
     }
 
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+
+        /**
+         * 解决按back结束progressbar
+         */
+        //当不为空且正在运行时
+        if (mTast != null && mTast.getStatus() == AsyncTask.Status.RUNNING)
+        {
+            //手动取消掉progressbar
+            //cancel()方法只是将对应的AsyncTask标记为cancel状态，并不是真正的取消线程的执行
+            mTast.cancel(true);
+        }
+    }
 
     class MyAsyncTask extends AsyncTask<Void, Integer, Void>
     {
@@ -48,6 +67,14 @@ public class ProgressBarTest extends AppCompatActivity
              */
             for (int i = 0; i < 100; i++)
             {
+
+                /**
+                 * 如果标记为了cancel，就跳出循环
+                 */
+                if (isCancelled())
+                {
+                    break;
+                }
 
                 /**
                  *
@@ -73,6 +100,11 @@ public class ProgressBarTest extends AppCompatActivity
         protected void onProgressUpdate(Integer... values)
         {
             super.onProgressUpdate(values);
+            if (isCancelled())
+            {
+                return;
+            }
+
             /**
              * 这里的Integer就是前面所指定的
              * 即publishProgress(i)传入的i就到了onProgressUpdate()这里
