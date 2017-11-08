@@ -17,6 +17,16 @@ public class ProgressBarTest extends AppCompatActivity
 
     private MyAsyncTask mTast;
 
+
+    /**
+     * AsyncTask注意点：
+     * 1.必须在UI线程中创建AsyncTask实例
+     * 2.必须在UI线程中调用AsyncTask的execute()方法
+     * 3.重写四个方法是系统自动调用的，不应手动调用
+     * 4.每个AsyncTask只能被执行一次，多次调用会引发异常
+     * 5.只有doInBackground运行在其他线程，其他的方法都运行在主线程，也就可以进行UI的操作
+     */
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
